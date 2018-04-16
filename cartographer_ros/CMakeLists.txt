@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 2.8.12)  # Ships with Ubuntu 14.04 (Trusty)
 project(cartographer_ros)
 
 set(PACKAGE_DEPENDENCIES
-  cartographer_ros_msgs
+#  cartographer_ros_msgs
   eigen_conversions
   geometry_msgs
   message_runtime
@@ -35,20 +35,22 @@ set(PACKAGE_DEPENDENCIES
   visualization_msgs
 )
 
-find_package(cartographer REQUIRED)
+#find_package(cartographer REQUIRED)
+include_directories(cartographer)
+set(CARTOGRAPHER_CMAKE_DIR cartographer/cmake)
 include("${CARTOGRAPHER_CMAKE_DIR}/functions.cmake")
 set(BUILD_SHARED_LIBS OFF)
 option(BUILD_GRPC "build features that require Cartographer gRPC support" false)
-google_initialize_cartographer_project()
-google_enable_testing()
+#google_initialize_cartographer_project()
+#google_enable_testing()
 
 find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPENDENCIES})
 
 include(FindPkgConfig)
 
 find_package(LuaGoogle REQUIRED)
-find_package(PCL REQUIRED COMPONENTS common)
-find_package(Eigen3 REQUIRED)
+#find_package(PCL REQUIRED COMPONENTS common)
+#find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system iostreams)
 
 find_package(urdfdom_headers REQUIRED)
@@ -134,22 +136,22 @@ set(TARGET_COMPILE_FLAGS "${TARGET_COMPILE_FLAGS} ${GOOG_CXX_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES
   COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
 
-if (CATKIN_ENABLE_TESTING)
-  foreach(TEST_SOURCE_FILENAME ${ALL_TESTS})
-    get_filename_component(TEST_NAME ${TEST_SOURCE_FILENAME} NAME_WE)
-    catkin_add_gtest(${TEST_NAME} ${TEST_SOURCE_FILENAME})
-    # catkin_add_gtest uses a plain (i.e. no PUBLIC/PRIVATE/INTERFACE) call to
-    # target_link_libraries. That forces us to do the same.
-    target_include_directories(${TEST_NAME} SYSTEM PUBLIC ${LUA_INCLUDE_DIR})
-    target_link_libraries(${TEST_NAME} ${LUA_LIBRARIES})
-    target_include_directories(${TEST_NAME} SYSTEM PUBLIC ${catkin_INCLUDE_DIRS})
-    target_link_libraries(${TEST_NAME} ${catkin_LIBRARIES})
-    add_dependencies(${TEST_NAME} ${catkin_EXPORTED_TARGETS})
-    target_link_libraries(${TEST_NAME} cartographer)
-    target_link_libraries(${TEST_NAME} ${PROJECT_NAME})
-    set_target_properties(${TEST_NAME} PROPERTIES COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
-  endforeach()
-endif()
+#if (CATKIN_ENABLE_TESTING)
+#  foreach(TEST_SOURCE_FILENAME ${ALL_TESTS})
+#    get_filename_component(TEST_NAME ${TEST_SOURCE_FILENAME} NAME_WE)
+#    catkin_add_gtest(${TEST_NAME} ${TEST_SOURCE_FILENAME})
+#    # catkin_add_gtest uses a plain (i.e. no PUBLIC/PRIVATE/INTERFACE) call to
+#    # target_link_libraries. That forces us to do the same.
+#    target_include_directories(${TEST_NAME} SYSTEM PUBLIC ${LUA_INCLUDE_DIR})
+#    target_link_libraries(${TEST_NAME} ${LUA_LIBRARIES})
+#    target_include_directories(${TEST_NAME} SYSTEM PUBLIC ${catkin_INCLUDE_DIRS})
+#    target_link_libraries(${TEST_NAME} ${catkin_LIBRARIES})
+#    add_dependencies(${TEST_NAME} ${catkin_EXPORTED_TARGETS})
+#    target_link_libraries(${TEST_NAME} cartographer)
+#    target_link_libraries(${TEST_NAME} ${PROJECT_NAME})
+#    set_target_properties(${TEST_NAME} PROPERTIES COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
+#  endforeach()
+#endif()
 
 install(DIRECTORY launch urdf configuration_files
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
